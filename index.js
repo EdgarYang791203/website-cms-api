@@ -1,11 +1,38 @@
-const http = require('http');
+const express = require("express");
+const app = express();
+const port = 3000;
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello, World!\n');
+// 測試端點
+app.get("/api", (req, res) => {
+  res.json({ message: "Hello, World!" });
 });
 
-server.listen(3000, '127.0.0.1', () => {
-  console.log('Server running at http://127.0.0.1:3000/');
+// 取得所有客戶
+app.get("/api/customers", (req, res) => {
+  // TODO
+});
+
+// 取得單個客戶
+app.get("/api/customers/:id", (req, res) => {
+  // TODO
+});
+
+// 建立客戶
+app.post("/api/customers", (req, res) => {
+  // TODO
+});
+
+// 更新客戶
+app.put("/api/customers/:id", (req, res) => {
+  // TODO
+});
+
+// 刪除客戶
+app.delete("/api/customers/:id", (req, res) => {
+  // TODO
+});
+
+// 啟動伺服器
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
 });
