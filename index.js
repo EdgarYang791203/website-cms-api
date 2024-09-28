@@ -1,27 +1,20 @@
 import express from "express";
+import cors from "cors";
 
 const app = express();
 const port = 3000;
 
+// 使用 cors 中間件，允許來自 localhost:5173 的請求
+app.use(
+  cors({
+    origin: "http://localhost:5173", // 允許前端的 URL
+  })
+);
+
 // 啟用 JSON 解析
 app.use(express.json());
 
-const comments = [
-  {
-    id: 1,
-    option: "upvote",
-    nickname: "測試",
-    comment: "測試",
-    time: new Date().getTime(),
-  },
-  {
-    id: 2,
-    option: "downvote",
-    nickname: "測試2",
-    comment: "測試2",
-    time: new Date().getTime(),
-  },
-];
+const comments = [];
 
 // 測試端點
 app.get("/api", (req, res) => {
@@ -49,6 +42,20 @@ app.get("/api/comments/:id", (req, res) => {
 
 // 創建留言
 app.post("/api/comments", (req, res) => {
+  const verifiedKeys = ["option", "nickname", "comment", "time"];
+  let errorKey = null;
+  for (let index = 0; index < verifiedKeys.length; index++) {
+    const key = verifiedKeys[index];
+    if (!req.body[key]) {
+      errorKey = key;
+      break;
+    }
+  }
+  if (errorKey) {
+    return res.status(422).json({
+      message: `${errorKey} is required`,
+    });
+  }
   const { option, nickname, comment, time } = req.body;
   const newComment = {
     id: comments.length + 1,
