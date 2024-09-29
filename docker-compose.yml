@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    build:
+      context: . # 這裡指定 Dockerfile 的位置
+    ports:
+      - "3000:3000" # 將本地的 3000 埠映射到容器的 3000 埠
+    volumes:
+      - .:/usr/src/app # 方便在開發時本地修改會立即生效
+    command: npm run dev # 使用 npm start 來啟動應用程式
