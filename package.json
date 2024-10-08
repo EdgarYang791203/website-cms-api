@@ -1,13 +1,19 @@
 {
-  "type": "module",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "npx nodemon --legacy-watch './*.ts' -e ts --exec 'ts-node' ./index.ts",
+    "dev:prisma-studio": "docker-compose exec app npx prisma studio",
+    "docker": "docker-compose up --build"
   },
   "dependencies": {
+    "@prisma/client": "^5.20.0",
     "cors": "^2.8.5",
     "express": "^4.21.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "@types/node": "^22.7.4",
+    "nodemon": "^3.1.7",
+    "prisma": "^5.20.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
   }
 }

@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Comment {
+  id    Int    @id @default(autoincrement())
+  nickname  String @default("default_nickname")
+  option  String @default("upvote")
+  comment String @default("default_comment")
+  created  DateTime @default(now())
+  updated DateTime @default(now())
+}

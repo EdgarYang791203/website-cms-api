@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8080
 
 # 啟動應用程式
-CMD ["node", "index.js"]
+CMD ["npx", "nodemon", "--legacy-watch", "./*.ts", "-e", "ts", "--exec", "ts-node", "./index.ts"]
