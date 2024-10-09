@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import cors from "cors";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 interface CommentType {
   id?: number;
@@ -37,7 +39,7 @@ const validation = (payload: Required<CommentType>) => {
 // 使用 cors 中間件，允許來自 localhost:5173 的請求
 app.use(
   cors({
-    origin: "http://localhost:5173", // 允許前端的 URL
+    origin: process.env.CORS_ORIGIN, // 允許前端的 URL
   })
 );
 
