@@ -5,11 +5,11 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 interface CommentType {
-  id?: number;
+  xata_id?: string;
+  xata_createdat?: string;
   option: string;
   nickname: string;
   comment: string;
-  time?: number;
 }
 
 const app = express();
@@ -55,36 +55,54 @@ const apiRouter = express.Router();
 
 app.use("/api", apiRouter);
 
+app.get("/test-db-connection", async (_req: Request, res: Response) => {
+  try {
+    // 試圖進行簡單的查詢操作來測試資料庫連接
+    const testConnection = await prisma.$queryRaw`SELECT 1`;
+    if (testConnection) {
+      res.json({ message: "Database connection successful!" });
+    } else {
+      res.status(500).json({ message: "Failed to connect to the database" });
+    }
+  } catch (error) {
+    console.error("Error connecting to database:", error);
+    res.status(500).json({ message: "Internal Server Error", error });
+  }
+});
+
 // 取得所有留言
 apiRouter.get("/comments", async (_req: Request, res: Response) => {
   try {
     const comments = await prisma.comment.findMany({
       orderBy: {
-        created: "desc",
+        xata_createdat: "asc",
       },
       select: {
-        id: true,
+        xata_id: true,
         option: true,
         nickname: true,
         comment: true,
-        created: true,
+        xata_createdat: true,
       },
     });
     console.log("Fetched comments:", comments);
     res.json(comments);
-  } catch (error) {
-    console.error("Error fetching comments:", error);
-    res.status(500).send("Internal Server Error");
+  } catch (error: any) {
+    console.error("Error fetching comments:", error.message || error);
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message || error,
+    });
   }
 });
 
 // 取得單個留言
 apiRouter.get("/comments/:id", async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
+  const id = req.params.id;
   try {
     const comment = await prisma.comment.findUnique({
       where: {
-        id, // 假設你要找的資料 id 為 1
+        xata_id: id, // 假設你要找的資料 id 為 1
       },
     });
     if (!comment) {
@@ -127,7 +145,7 @@ apiRouter.post("/comments", async (req: Request, res: Response) => {
 
 // 修改留言
 apiRouter.put("/comments/:id", async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
+  const id = req.params.id;
   const errorMessage = validation(req.body);
   if (errorMessage) {
     return res.status(422).json({
@@ -144,7 +162,7 @@ apiRouter.put("/comments/:id", async (req: Request, res: Response) => {
 
   try {
     await prisma.comment.update({
-      where: { id },
+      where: { xata_id: id },
       data: newComment,
     });
     res.status(201).json(newComment);
@@ -155,11 +173,11 @@ apiRouter.put("/comments/:id", async (req: Request, res: Response) => {
 
 // 刪除留言
 apiRouter.delete("/comments/:id", async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
 
   try {
     await prisma.comment.delete({
-      where: { id },
+      where: { xata_id: id },
     });
     res.status(204).send();
   } catch {
