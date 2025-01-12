@@ -1,5 +1,6 @@
 # 使用官方 Node.js 鏡像作為基礎鏡像
-FROM node:18
+FROM node:18-slim
+RUN apt-get update && apt-get upgrade -y
 
 # 設定工作目錄
 WORKDIR /usr/src/app
@@ -17,4 +18,4 @@ COPY . .
 EXPOSE 8080
 
 # 啟動應用程式
-CMD ["npx", "nodemon", "--legacy-watch", "./*.ts", "-e", "ts", "--exec", "ts-node", "./index.ts"]
+CMD ["npx", "nodemon", "--legacy-watch", "-e", "ts", "--exec", "ts-node", "./index.ts"]
